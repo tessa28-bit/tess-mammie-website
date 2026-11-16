@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tess-Mammie Solution | Hospitality, Transport, Real Estate &amp; Design in Liberia</title>
+<meta name="description" content="Tess-Mammie Solution offers hospitality, transport, real estate and design services in Liberia. Book or ask on WhatsApp.">
+<style>
+:root{
+  --navy:#0f2a4a;
+  --navy-2:#17375e;
+  --red:#c8102e;
+  --red-dark:#a30d25;
+  --paper:#ffffff;
+  --mist:#eef2f7;
+  --ink:#1a2433;
+  --muted:#52607a;
+  --line:#d5dce8;
+  --serif:Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.6;font-size:17px}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+
+/* header */
+header{background:var(--navy);color:#fff}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:16px;flex-wrap:wrap}
+.brand{font-family:var(--serif);font-size:1.15rem;font-weight:700;text-decoration:none}
+nav{display:flex;gap:18px;flex-wrap:wrap;font-size:.95rem}
+nav a{text-decoration:none;opacity:.9}
+nav a:hover{opacity:1;text-decoration:underline}
+
+/* hero */
+.hero{padding:56px 0 64px}
+.hero h1{font-family:var(--serif);font-size:clamp(2rem,6vw,3.6rem);line-height:1.1;margin:0 0 18px;max-width:16ch}
+.hero p{max-width:52ch;margin:0 0 28px;color:#d6e0ef;font-size:1.1rem}
+.route{display:flex;align-items:center;gap:0;margin:0 0 34px;max-width:560px;font-size:.95rem}
+.stop{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0}
+.dot{width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--red)}
+.stop span{white-space:nowrap}
+.seg{flex:1;height:3px;background:repeating-linear-gradient(90deg,#fff 0 10px,transparent 10px 18px);margin-bottom:26px;opacity:.7}
+.btn{display:inline-block;background:var(--red);color:#fff;text-decoration:none;font-weight:700;padding:14px 24px;border-radius:6px;border:0;font-size:1rem}
+.btn:hover{background:var(--red-dark)}
+.btn.alt{background:transparent;border:2px solid #fff;margin-left:10px}
+.btn.alt:hover{background:rgba(255,255,255,.12)}
+.btn.small{padding:10px 18px;font-size:.95rem}
+
+/* services */
+section{padding:60px 0}
+h2{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.2rem);margin:0 0 8px;color:var(--navy)}
+.lead{color:var(--muted);margin:0 0 34px;max-width:56ch}
+.service{display:grid;grid-template-columns:200px 1fr auto;gap:12px 32px;align-items:start;padding:26px 0;border-top:1px solid var(--line)}
+.service:last-child{border-bottom:1px solid var(--line)}
+.service h3{font-family:var(--serif);font-size:1.4rem;margin:0;color:var(--navy)}
+.service p{margin:0 0 8px}
+.service ul{margin:0;padding-left:1.1rem;color:var(--muted)}
+
+/* steps */
+.steps{background:var(--mist)}
+.steps ol{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.steps li{counter-increment:s;padding-top:14px;border-top:4px solid var(--navy)}
+.steps li::before{content:"Step " counter(s);display:block;font-weight:700;color:var(--red);margin-bottom:4px}
+.steps h3{margin:0 0 6px;font-family:var(--serif);color:var(--navy)}
+.steps p{margin:0;color:var(--muted)}
+
+/* contact */
+.contact{background:var(--navy);color:#fff}
+.contact h2{color:#fff}
+.contact p{color:#d6e0ef;max-width:52ch}
+.contact .row{display:flex;gap:14px;flex-wrap:wrap;margin-top:22px}
+.contact a.plain{color:#fff}
+footer{background:#0a1d34;color:#aebbd0;padding:22px 0;font-size:.9rem}
+
+@media (max-width:760px){
+  .service{grid-template-columns:1fr}
+  .steps ol{grid-template-columns:1fr}
+  .btn.alt{margin:12px 0 0}
+  .stop span{font-size:.85rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="bar">
+      <a class="brand" href="#top">Tess-Mammie Solution</a>
+      <nav aria-label="Main">
+        <a href="#services">Services</a>
+        <a href="#how">How to order</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+    <div class="hero" id="top">
+      <h1>Stay, travel, find a home, get it designed.</h1>
+      <p>One Liberian company for hospitality, transport, real estate and design. Tell us what you need on WhatsApp and we reply with details and prices.</p>
+      <div class="route" aria-label="Transport routes: Monrovia, Freetown, Abidjan">
+        <div class="stop"><div class="dot"></div><span>Monrovia</span></div>
+        <div class="seg"></div>
+        <div class="stop"><div class="dot"></div><span>Freetown</span></div>
+        <div class="seg"></div>
+        <div class="stop"><div class="dot"></div><span>Abidjan</span></div>
+      </div>
+      <a class="btn" href="https://wa.me/231772598570?text=Hello%20Tess-Mammie%20Solution%2C%20I%20would%20like%20to%20make%20an%20inquiry." target="_blank" rel="noopener">Chat on WhatsApp</a>
+      <a class="btn alt" href="#services">See services</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section id="services">
+  <div class="wrap">
+    <h2>What we do</h2>
+    <p class="lead">Pick a service and message us directly. Each button opens WhatsApp with your request already typed.</p>
+
+    <div class="service">
+      <h3>Hospitality</h3>
+      <div>
+        <p>Places to stay, eat and enjoy.</p>
+        <ul>
+          <li>Hotels and guesthouses</li>
+          <li>Restaurants</li>
+          <li>Bars and event spaces</li>
+        </ul>
+      </div>
+      <a class="btn small" href="https://wa.me/231772598570?text=Hello%2C%20I%20am%20interested%20in%20your%20Hospitality%20services." target="_blank" rel="noopener">Ask about hospitality</a>
+    </div>
+
+    <div class="service">
+      <h3>Transport</h3>
+      <div>
+        <p>Travel between cities and buy vehicles.</p>
+        <ul>
+          <li>Commercial vehicle trips, such as Monrovia to Freetown and Monrovia to Ivory Coast</li>
+          <li>Vehicle sales</li>
+        </ul>
+      </div>
+      <a class="btn small" href="https://wa.me/231772598570?text=Hello%2C%20I%20would%20like%20to%20ask%20about%20your%20Transport%20services." target="_blank" rel="noopener">Ask about transport</a>
+    </div>
+
+    <div class="service">
+      <h3>Real estate</h3>
+      <div>
+        <p>Find, rent or sell property.</p>
+        <ul>
+          <li>Houses and apartments</li>
+          <li>Land</li>
+          <li>Listings for owners who want to rent or sell</li>
+        </ul>
+      </div>
+      <a class="btn small" href="https://wa.me/231772598570?text=Hello%2C%20I%20am%20interested%20in%20Real%20Estate." target="_blank" rel="noopener">Ask about property</a>
+    </div>
+
+    <div class="service">
+      <h3>Designs</h3>
+      <div>
+        <p>Design work for people and businesses.</p>
+        <ul>
+          <li>Wedding, graduation and anniversary invitations</li>
+          <li>Flyers, logos and price lists</li>
+          <li>Photo editing and document design</li>
+          <li>Fashion designs</li>
+        </ul>
+      </div>
+      <a class="btn small" href="https://wa.me/231772598570?text=Hello%2C%20I%20need%20a%20design%20from%20Tess-Mammie%20Solution." target="_blank" rel="noopener">Request a design</a>
+    </div>
+  </div>
+</section>
+
+<section class="steps" id="how">
+  <div class="wrap">
+    <h2>How to order</h2>
+    <p class="lead">No account, no long forms.</p>
+    <ol>
+      <li>
+        <h3>Message us</h3>
+        <p>Tap any WhatsApp button and say what you need.</p>
+      </li>
+      <li>
+        <h3>Get details and a price</h3>
+        <p>We reply with what is available, the cost and the timing.</p>
+      </li>
+      <li>
+        <h3>Confirm and receive</h3>
+        <p>Agree on the details, then we deliver your service.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <h2>Contact us</h2>
+    <p>Based in Montserrado, Liberia. WhatsApp is the fastest way to reach us.</p>
+    <div class="row">
+      <a class="btn" href="https://wa.me/231772598570" target="_blank" rel="noopener">WhatsApp +231 77 259 8570</a>
+      <a class="btn alt" style="margin-left:0" href="mailto:kpaulsaah25@gmail.com">Email us</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">&copy; <span id="y">2026</span> Tess-Mammie Solution. Liberia.</div>
+</footer>
+
+</body>
+</html>
