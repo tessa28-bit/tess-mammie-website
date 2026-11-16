@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tess-Mammie Business App</title>
+<style>
+:root{--navy:#0f2a4a;--red:#c8102e;--red-d:#a30d25;--mist:#eef2f7;--ink:#1a2433;--muted:#52607a;--line:#d5dce8;--ok:#14663a}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--mist);line-height:1.5}
+header{background:var(--navy);color:#fff}
+.top{max-width:900px;margin:0 auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-family:Georgia,serif;font-weight:700;font-size:1.1rem}
+main{max-width:900px;margin:0 auto;padding:28px 20px 60px}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:22px;margin-bottom:20px}
+.narrow{max-width:420px;margin:30px auto}
+h1,h2{font-family:Georgia,serif;color:var(--navy);margin:0 0 10px}
+h1{font-size:1.6rem}h2{font-size:1.25rem}
+label{display:block;font-weight:600;margin:14px 0 4px;font-size:.95rem}
+input,select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:6px;font-size:1rem;font-family:inherit}
+button{background:var(--red);color:#fff;border:0;padding:12px 20px;border-radius:6px;font-weight:700;font-size:1rem;cursor:pointer;margin-top:16px}
+button:hover{background:var(--red-d)}
+button.ghost{background:transparent;color:#fff;border:1px solid #fff;margin:0;padding:8px 14px;font-size:.9rem}
+button.link{background:none;color:var(--navy);text-decoration:underline;padding:0;margin:14px 0 0;font-weight:600}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.msg{margin-top:14px;padding:10px 12px;border-radius:6px;font-size:.95rem}
+.msg.err{background:#fde8ec;color:#8a0c20}
+.msg.ok{background:#e3f4ea;color:var(--ok)}
+.muted{color:var(--muted)}
+.tag{display:inline-block;background:var(--navy);color:#fff;border-radius:4px;padding:2px 8px;font-size:.8rem;text-transform:capitalize}
+.row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);align-items:center}
+.row:first-of-type{border-top:0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{background:var(--mist);border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:.85rem}
+@media (max-width:640px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="top"><span class="brand">Tess-Mammie Solution</span><span id="who"></span></div></header>
+<main id="app"><p class="muted">Loading…</p></main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+<script>
+const SUPABASE_URL = "https://zvcvbaenybcllkjrqvbw.supabase.co";
+const SUPABASE_KEY = "sb_publishable_c98teZCzWibHvXtmsegUZg_gKPMpWVP";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const app = document.getElementById("app");
+const who = document.getElementById("who");
+let session = null;
+let mode = "signin";
+let currentCompanyId = null;
+
+/* tiny DOM helper: text is always inserted as text, never as HTML */
+function h(tag, props, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(props || {})) {
+    if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k === "class") el.className = v;
+    else el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) {
+    if (kid == null) continue;
+    el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  }
+  return el;
+}
+function show(node) { app.replaceChildren(node); }
+function message(box, text, ok) {
+  box.className = "msg " + (ok ? "ok" : "err");
+  box.textContent = text;
+}
+
+/* ---------- sign in / sign up ---------- */
+function authView() {
+  who.replaceChildren();
+  const signup = mode === "signup";
+  const name = h("input", { id: "name", autocomplete: "name" });
+  const email = h("input", { id: "email", type: "email", autocomplete: "email" });
+  const pass = h("input", { id: "pass", type: "password", autocomplete: signup ? "new-password" : "current-password" });
+  const box = h("div");
+  const go = h("button", { type: "button", onclick: async () => {
+    box.className = ""; box.textContent = "";
+    if (!email.value || pass.value.length < 8) return message(box, "Enter your email and a password of at least 8 characters.");
+    go.disabled = true;
+    try {
+      if (signup) {
+        const { data, error } = await sb.auth.signUp({
+          email: email.value.trim(), password: pass.value,
+          options: { data: { full_name: name.value.trim() } }
+        });
+        if (error) throw error;
+        if (!data.session) message(box, "Account created. Check your email and click the confirmation link, then sign in.", true);
+      } else {
+        const { error } = await sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value });
+        if (error) throw error;
+      }
+    } catch (e) { message(box, e.message); }
+    go.disabled = false;
+  } }, signup ? "Create account" : "Sign in");
+
+  show(h("div", { class: "card narrow" },
+    h("h1", {}, signup ? "Create your account" : "Sign in"),
+    h("p", { class: "muted" }, "Manage your company, team and settings in one place."),
+    signup ? [h("label", { for: "name" }, "Full name"), name] : null,
+    h("label", { for: "email" }, "Email"), email,
+    h("label", { for: "pass" }, "Password"), pass,
+    go, box,
+    h("div", {}, h("button", { class: "link", type: "button", onclick: () => { mode = signup ? "signin" : "signup"; authView(); } },
+      signup ? "I already have an account" : "New here? Create an account"))
+  ));
+}
+
+/* ---------- create company ---------- */
+function createCompanyView() {
+  const name = h("input", { id: "cname", placeholder: "e.g. Monrovia Fresh Foods" });
+  const box = h("div");
+  const go = h("button", { type: "button", onclick: async () => {
+    if (name.value.trim().length < 2) return message(box, "Enter your company name.");
+    go.disabled = true;
+    const { data, error } = await sb.rpc("create_company", { p_name: name.value.trim() });
+    go.disabled = false;
+    if (error) return message(box, error.message);
+    currentCompanyId = data;
+    render();
+  } }, "Create company");
+  show(h("div", { class: "card narrow" },
+    h("h1", {}, "Create your company"),
+    h("p", { class: "muted" }, "You will be the owner and can invite managers and staff later."),
+    h("label", { for: "cname" }, "Company name"), name, go, box
+  ));
+}
+
+/* ---------- dashboard ---------- */
+async function dashboardView(memberships) {
+  const current = memberships.find(m => m.companies.id === currentCompanyId) || memberships[0];
+  currentCompanyId = current.companies.id;
+  const cid = currentCompanyId;
+
+  const [settingsRes, membersRes, permsRes] = await Promise.all([
+    sb.from("company_settings").select("*").eq("company_id", cid).maybeSingle(),
+    sb.from("company_members").select("user_id,role,status").eq("company_id", cid),
+    sb.from("role_permissions").select("permission").eq("company_id", cid).eq("role", current.role)
+  ]);
+  const st = settingsRes.data || {};
+  const members = membersRes.data || [];
+  const perms = (permsRes.data || []).map(p => p.permission).sort();
+
+  const switcher = memberships.length > 1
+    ? h("select", { "aria-label": "Switch company", onchange: e => { currentCompanyId = e.target.value; render(); } },
+        memberships.map(m => { const o = h("option", { value: m.companies.id }, m.companies.name); if (m.companies.id === cid) o.selected = true; return o; }))
+    : null;
+
+  const leave = h("input", { id: "leave", type: "number", min: "0", value: st.leave_days_per_year ?? "" });
+  const hours = h("input", { id: "hours", type: "number", min: "0", step: "0.5", value: st.work_hours_per_week ?? "" });
+  const period = h("select", { id: "period" },
+    ["weekly", "biweekly", "monthly"].map(p => { const o = h("option", { value: p }, p); if (p === st.pay_period) o.selected = true; return o; }));
+  const box = h("div");
+  const save = h("button", { type: "button", onclick: async () => {
+    save.disabled = true;
+    const { data, error } = await sb.from("company_settings").update({
+      leave_days_per_year: Number(leave.value), work_hours_per_week: Number(hours.value),
+      pay_period: period.value, updated_at: new Date().toISOString()
+    }).eq("company_id", cid).select();
+    save.disabled = false;
+    if (error) return message(box, error.message);
+    if (!data || !data.length) return message(box, "Your role does not have permission to change settings.");
+    message(box, "Settings saved.", true);
+  } }, "Save settings");
+
+  show(h("div", {},
+    h("div", { class: "card" },
+      h("h1", {}, current.companies.name),
+      h("p", { class: "muted" }, "Your role: ", h("span", { class: "tag" }, current.role), "   Plan: ", current.companies.plan),
+      switcher,
+      h("div", { class: "chips" }, perms.length ? perms.map(p => h("span", { class: "chip" }, p)) : h("span", { class: "muted" }, "No extra permissions for this role."))
+    ),
+    h("div", { class: "grid" },
+      h("div", { class: "card" },
+        h("h2", {}, "Company settings"),
+        h("label", { for: "leave" }, "Leave days per year"), leave,
+        h("label", { for: "hours" }, "Work hours per week"), hours,
+        h("label", { for: "period" }, "Pay period"), period,
+        save, box),
+      h("div", { class: "card" },
+        h("h2", {}, "Team (", members.length, ")"),
+        members.map(m => h("div", { class: "row" },
+          h("span", {}, m.user_id === session.user.id ? "You" : "Member " + m.user_id.slice(0, 8)),
+          h("span", {}, h("span", { class: "tag" }, m.role), " ", m.status))),
+        h("p", { class: "muted" }, "Inviting people and showing names comes in the next step.")
+      )
+    ),
+    h("div", { class: "card" }, h("h2", {}, "Coming next"), h("p", { class: "muted" }, "Hiring portal, staff records, AI assistant and payroll calculator."))
+  ));
+}
+
+/* ---------- main ---------- */
+async function render() {
+  if (!session) return authView();
+  who.replaceChildren(
+    h("span", { class: "muted", style: "color:#c9d6ea;margin-right:12px" }, session.user.email),
+    h("button", { class: "ghost", type: "button", onclick: () => sb.auth.signOut() }, "Sign out")
+  );
+  const { data, error } = await sb.from("company_members")
+    .select("role,status,companies(id,name,plan)")
+    .eq("user_id", session.user.id).eq("status", "active");
+  if (error) return show(h("div", { class: "card" }, h("h2", {}, "Something went wrong"), h("p", {}, error.message)));
+  const memberships = (data || []).filter(m => m.companies);
+  if (!memberships.length) return createCompanyView();
+  dashboardView(memberships);
+}
+
+sb.auth.onAuthStateChange((_event, s) => {
+  session = s;
+  setTimeout(render, 0);
+});
+sb.auth.getSession().then(({ data }) => { session = data.session; render(); });
+</script>
+</body>
+</html>
